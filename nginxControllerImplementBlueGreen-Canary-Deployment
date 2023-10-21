@@ -1,0 +1,30 @@
+# Use the NGINX Ingress controller to implement canary releases and blue-green releases
+# refrence URL: https://www.alibabacloud.com/help/en/ack/ack-managed-and-ack-dedicated/user-guide/use-the-nginx-ingress-controller-for-canary-releases-and-blue-green-deployments-1#97353954femfq
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-by-header: foo
+    nginx.ingress.kubernetes.io/canary-by-header-value: bar
+    nginx.ingress.kubernetes.io/canary-weight: "50"
+  creationTimestamp: "2023-10-21T10:29:27Z"
+  generation: 1
+  name: gray-release-canary
+  namespace: default
+  resourceVersion: "2762226"
+  uid: cc07a039-c671-4198-b91f-9d235ffd0113
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: www.example.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: new-nginx
+            port:
+              number: 80
+        path: /
+        pathType: ImplementationSpecific
